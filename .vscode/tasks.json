@@ -1,0 +1,49 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+	  {
+		"label": "make",
+		"type": "shell",
+		"command": "make",
+		"group": {
+		  "kind": "test",
+		  "isDefault": true
+		},
+		"presentation": {
+		  "reveal": "always",
+		  "panel": "new"
+		}
+	  },
+	  {
+		"label": "run",
+		"type": "shell",
+		"command": "Start-Process powershell -ArgumentList './out/${input:my_name}.exe ${input:my_args}; Write-Host; pause'; Measure-Command { ./out/${input:my_name}.exe ${input:my_args} } | ForEach-Object -Process { Write-Host Running Time: $_.TotalSeconds s}",
+		"group": {
+		  "kind": "build",
+		  "isDefault": true
+		},
+		"presentation": {
+		  "reveal": "always",
+		  "panel": "new"
+		},
+		"dependsOrder": "sequence",
+		"dependsOn": "make"
+	  }
+	],
+
+	"inputs": [
+		{
+			"id": "my_args",
+			"description": "What are the arguments for the program?",
+			"type": "promptString",
+			"default": ""
+		},
+		{
+			"id": "my_name",
+			"description": "name of the program (without .exe)",
+			"type": "promptString",
+			"default": "TBD"
+
+		}
+	],
+  }
