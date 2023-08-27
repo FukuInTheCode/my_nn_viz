@@ -1,47 +1,23 @@
 #include "../includes/my.h"
 
-double exampleFunction(double x) {
-    return x;
-}
-double exampleFunction2(double x) {
-    return x * x;
-}
-
-void generatePoints(sfVector2f points[], int num, double (*func)(double), double start, double end) {
-    double step = (end - start) / (num - 1);
-    for (int i = 0; i < num; i++) {
-        double x = start + i * step;
-        points[i].x = x;
-        points[i].y = func(x);
-    }
-}
+// AND - gates
+double and_train_fea[] = {
+    0, 0,
+    0, 1,
+    1, 0,
+    1, 1
+};
+double and_train_tar[] = {
+    0,
+    0,
+    0,
+    1
+};
 
 int main(void)
 {
-    double start = -10;
-    double end = 10;
-    size_t num = 21;
-    double start2 = -10;
-    double end2 = 10;
-    size_t num2 = 100;
-
     sfVector2f points[num];
     sfVector2f c_pts[num];
-    sfVector2f points2[num2];
-    sfVector2f c_pts2[num2];
-
-    generatePoints(points, num, exampleFunction, start, end);
-    generatePoints(points2, num2, exampleFunction2, start2, end2);
-
-    double undef[] = { 1 };
-
-    my_func_t f = {
-        .f = exampleFunction,
-        .left_type = inf,
-        .right_type = inf,
-        .n_undef = 1,
-        .undefined = undef
-    };
 
     my_theme_t th_plt = {
         .type = plot_th,
