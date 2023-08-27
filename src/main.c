@@ -16,7 +16,6 @@ double and_train_tar[] = {
 
 int main(void)
 {
-
     my_params_t hp = {
         .alpha = 1e-2,
         .iterations = 1000,

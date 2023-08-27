@@ -44,10 +44,14 @@ typedef struct {
     sfVector2f min_values;
 
     size_t data_num;
-    struct {
+    union {
+        struct {
+            size_t max_pts;
+            my_func_t func;
+        } st_func;
+
         size_t max_pts;
-        my_func_t func;
-    } st_func;
+    };
     sfVector2f *points;
     sfVector2f *computed_pts;
 
