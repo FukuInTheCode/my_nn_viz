@@ -20,8 +20,7 @@ typedef enum {
 typedef enum {
     static_pts,
     dynamic_pts,
-    static_func,
-    dynamic_func
+    func
 } my_graph_type_t;
 
 typedef struct {
@@ -44,15 +43,14 @@ typedef struct {
     sfVector2f max_values;
     sfVector2f min_values;
 
-    sfVector2f ratio;
     size_t data_num;
     struct {
         size_t max_pts;
         my_func_t func;
     } st_func;
     sfVector2f *points;
-
     sfVector2f *computed_pts;
+
     my_theme_t *theme;
 } my_graph_t;
 
@@ -61,6 +59,7 @@ typedef struct {
     sfEvent *event;
 
     sfBool is_dragged;
+    sfVector2f ratio;
     sfVector2f shift;
     sfVector2i last_shift;
 
@@ -85,13 +84,53 @@ static inline __attribute__((always_inline)) void compute_pts(my_plot_t *plt,\
     sfVector2u tmp_vec = sfRenderWindow_getSize(plt->window);
     copy_vec(g->computed_pts, g->points, g->data_num);
     for (size_t i = 0; i < g->data_num; ++i) {
-        g->computed_pts[i].x *= g->ratio.x;
-        g->computed_pts[i].y *= g->ratio.y;
+        g->computed_pts[i].x *= plt->ratio.x;
+        g->computed_pts[i].y *= plt->ratio.y;
         g->computed_pts[i].y = (tmp_vec.y - g->theme->graph.radius*2) -\
                                     g->computed_pts[i].y;
         g->computed_pts[i].x += tmp_vec.x / 2.f;
         g->computed_pts[i].y -= tmp_vec.y / 2.f;
     }
+}
+
+static inline __attribute__((always_inline)) void find_extrema(my_graph_t *g)
+{
+    g->max_values.x = 0;
+    g->max_values.y = 0;
+    g->min_values.x = 0;
+    g->min_values.y = 0;
+    for (size_t i = 0; i < g->data_num; ++i) {
+        if (g->points[i].x > g->max_values.x)
+            g->max_values.x = g->points[i].x;
+
+        if (g->points[i].y > g->max_values.y)
+            g->max_values.y = g->points[i].y;
+
+        if (g->points[i].x < g->min_values.x)
+            g->min_values.x = g->points[i].x;
+
+        if (g->points[i].y < g->min_values.y)
+            g->min_values.y = g->points[i].y;
+    }
+}
+
+static inline __attribute__((always_inline)) void calc_ratio(my_plot_t *plt, my_graph_t *g)
+{
+    sfVector2u tmp_vec = sfRenderWindow_getSize(plt->window);
+    find_extrema(g);
+
+    double x_range = 20;
+    double y_range = 20;
+
+    if (g->type == dynamic_pts) {
+        x_range = g->max_values.x - g->min_values.x;
+        y_range = g->max_values.y - g->min_values.y;
+    }
+
+    if ((tmp_vec.x - g->theme->graph.radius * 2) / x_range < plt->ratio.x)
+        plt->ratio.x = (tmp_vec.x - g->theme->graph.radius * 2) / x_range;
+    if ((tmp_vec.y - g->theme->graph.radius * 2) / y_range < plt->ratio.y)
+        plt->ratio.y = (tmp_vec.y - g->theme->graph.radius * 2) / y_range;
 }
 
 void my_plot_create(my_plot_t *plt, char *title, sfVideoMode *md, sfEvent *evt);

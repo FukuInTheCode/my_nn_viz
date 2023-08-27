@@ -16,8 +16,15 @@ double and_train_tar[] = {
 
 int main(void)
 {
-    sfVector2f points[num];
-    sfVector2f c_pts[num];
+
+    my_params_t hp = {
+        .alpha = 1e-2,
+        .iterations = 1000,
+        .threshold = 1e-3
+    };
+
+    sfVector2f error_pts[hp.iterations];
+    sfVector2f c_pts[hp.iterations];
 
     my_theme_t th_plt = {
         .type = plot_th,
@@ -29,30 +36,13 @@ int main(void)
         .graph.radius = 10,
         .graph.pt = sfRed
     };
-    my_theme_t th_g2 = {
-        .type = graph_th,
-        .graph.radius = 5,
-        .graph.pt = sfYellow
-    };
 
     my_graph_t g = {
         .points = points,
         .computed_pts = c_pts,
         .data_num = num,
-        .type = static_pts,
+        .type = dynamic_pts,
         .theme = &th_g1
-    };
-
-    my_graph_t g2 = {
-        .points = points2,
-        .computed_pts = c_pts2,
-        .data_num = num2,
-        .type = static_func,
-        .st_func = {
-            .func = f,
-            .max_pts = num2
-        },
-        .theme = &th_g2
     };
 
     my_graph_t *g_arr[] = {
