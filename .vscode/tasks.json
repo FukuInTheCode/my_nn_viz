@@ -42,7 +42,7 @@
 			"id": "my_name",
 			"description": "name of the program (without .exe)",
 			"type": "promptString",
-			"default": "TBD"
+			"default": "my_nn_viz"
 
 		}
 	],

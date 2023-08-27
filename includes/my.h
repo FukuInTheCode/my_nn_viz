@@ -2,6 +2,11 @@
 #define MYH
 
 #include <stdio.h>
-#include "./test.h"
+#include <time.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <stdint.h>
+#include "my_viz.h"
 
-void hello(void);
+#define ARRAY_LENGTH(arr) sizeof(arr) / sizeof(arr[0])
+

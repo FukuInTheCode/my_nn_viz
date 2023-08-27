@@ -1,10 +1,12 @@
-NAME       = TBD
+NAME       = my_nn_viz
 
 CFLAGS     = -W -Wall -Wextra
 
 LIB        = -l$(NAME)
 
-DEPENDENCIES = TBD
+CSFML	   = -lcsfml-graphics -lcsfml-system -lcsfml-audio -lcsfml-window
+
+DEPENDENCIES = -lmy_plot -lmy_neuralnetwork -lmy_matrix -lmy_math $(CSFML)
 
 SRC        = $(wildcard ./src/*.c)
 
