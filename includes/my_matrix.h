@@ -6,6 +6,21 @@
 #define FALSE 0
 #define TRUE 1
 
+#define MAT_PRINT(A) my_matrix_print(1, &A)
+#define MAT_FREE(A) my_matrix_free(1, &A)
+
+#define MAT_PRINT_DIM(A) printf("%s's dim: m = %u, n = %u\n", A.name, A.m, A.n)
+
+#define MAT_DECLA(A) my_matrix_t A = {.n = 0, .m = 0, .name = #A}
+
+static inline __attribute__((always_inline)) void check_alloc(void *A)
+{
+    if (A == NULL) {
+        fprintf(stderr, "Memory allocation failed!");
+        exit(1);
+    }
+}
+
 typedef enum {
     my_false = FALSE,
     my_true = TRUE
@@ -88,7 +103,6 @@ static inline __attribute__((always_inline)) char *init_str(char *str, int i)
     char *m_str = malloc(strlen(str) + 1 + ite);
     if (m_str == NULL) {
         fprintf(stderr, "Memory Allocation Failed!");
-        printf("%llu\n", strlen(str) + 1 + ite);
         exit(1);
     }
     strcpy(m_str, str);
