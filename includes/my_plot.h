@@ -118,13 +118,13 @@ static inline __attribute__((always_inline)) void find_extrema(my_graph_t *g)
     }
 }
 
-static inline __attribute__((always_inline)) void calc_ratio(my_plot_t *plt, my_graph_t *g)
+static inline __attribute__((always_inline)) void calc_ratio(my_plot_t *plt, my_graph_t *g, double base_range)
 {
     sfVector2u tmp_vec = sfRenderWindow_getSize(plt->window);
     find_extrema(g);
 
-    double x_range = 20;
-    double y_range = 20;
+    double x_range = base_range;
+    double y_range = base_range;
 
     if (g->type == dynamic_pts) {
         x_range = g->max_values.x - g->min_values.x;

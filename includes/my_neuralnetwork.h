@@ -3,37 +3,37 @@
 
 #include "my_matrix.h"
 
+typedef double (*double_func_double)(double);
+
 typedef struct {
-    char *name;
+    uint32_t size;
     my_matrix_t *theta_arr;
     my_matrix_t *bias_arr;
-    uint32_t *layers;
-    uint32_t layers_size;
     my_matrix_t *activations;
-    my_matrix_t *z;
-    my_matrix_t *gradientsTheta;
-    my_matrix_t *gradientsBias;
-    my_bool_t apply_all;
+    my_matrix_t *gradients_theta;
+    my_matrix_t *gradients_bias;
+    struct {
+        double_func_double af;
+        double_func_double grad_af;
+    } funcs;
 } my_nn_t;
 
-typedef struct my_params {
-    uint32_t iterations;
+typedef struct {
     double alpha;
+    uint32_t epoch;
     double threshold;
 } my_params_t;
 
-void my_nn_create(my_nn_t *N);
-void my_nn_free(my_nn_t *N);
-void my_nn_create_activation(my_nn_t *N, uint8_t inputs_size);
-void my_nn_forwardpropagation(my_nn_t *N, my_matrix_t *inputs);
-double my_nn_activation_relu(double x);
-double my_nn_activation_relu_grad(double x);
-double my_nn_calcerror_mse(my_nn_t *N, my_matrix_t *inputs, my_matrix_t *Y);
-void my_nn_create_gradients(my_nn_t *N);
-void my_nn_backpropagation(my_nn_t *N, my_matrix_t *inputs, my_matrix_t *Y);
-void my_nn_train(my_nn_t *N, my_matrix_t *inputs, \
-                        my_matrix_t *Y, my_params_t *hyper_params);
-void my_nn_print(my_nn_t *N);
-void my_nn_predict(my_nn_t *N, my_matrix_t *inputs, my_matrix_t *pred);
-double my_nn_activation_sigmoid_grad(double x);
-double my_nn_activation_sigmoid(double x);
+void my_nn_create(my_nn_t *nn, uint32_t *dimensions);
+void my_nn_forward(my_nn_t *nn, my_matrix_t *x);
+double my_nn_sigmoid(double x);
+double my_nn_relu(double x);
+double my_nn_sig_grad(double x);
+double my_nn_relu_grad(double x);
+void my_nn_backprogation(my_nn_t *nn, my_matrix_t *x, my_matrix_t *y);
+void my_nn_train(my_nn_t *nn, my_matrix_t *x, my_matrix_t *y, my_params_t *hp);
+void my_nn_predict(my_nn_t *nn, my_matrix_t *x, my_matrix_t *res);
+double my_nn_calc_error(my_nn_t *nn, my_matrix_t *x, my_matrix_t *y);
+double my_nn_linear(double x);
+double my_nn_linear_grad(double x);
+
