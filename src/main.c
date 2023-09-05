@@ -63,9 +63,9 @@ int main(void)
     MAT_DECLA(targets);
 
     my_matrix_create(4, 2, 1, &features_tr);
-    my_matrix_fill_from_array(&features_tr, xor_train_fea, 8);
+    my_matrix_fill_from_array(&features_tr, and_train_fea, 8);
     my_matrix_create(4, 1, 1, &targets_tr);
-    my_matrix_fill_from_array(&targets_tr, xor_train_tar, 4);
+    my_matrix_fill_from_array(&targets_tr, and_train_tar, 4);
 
     MAT_PRINT(features_tr);
     MAT_PRINT(targets_tr);
@@ -84,6 +84,78 @@ int main(void)
 
     my_matrix_transpose(&features_tr, &features);
     my_matrix_transpose(&targets_tr, &targets);
+
+    // MAT_PRINT(features);
+    // MAT_PRINT(targets);
+
+    my_nn_t neuro = {.name = "neuro"};
+
+    neuro.size = 2;
+    uint32_t dims[] = {features.m, targets.m};
+
+    neuro.dims = dims;
+
+    neuro.acti_type = base_type;
+    neuro.funcs.af = my_nn_sin;
+    neuro.funcs.grad_af = my_nn_sin_grad;
+
+    my_nn_create(&neuro);
+
+    my_params_t hparams = {
+        .alpha = 1e-1,
+        .epoch = 1,
+        .threshold = 1e-4
+    };
+    uint32_t n = 10*1000;
+    double xs[n];
+    double ys[n];
+
+
+    printf("%lf\n", my_nn_calc_error(&neuro, &features, &targets));
+
+    for (uint32_t i = 0; i < n; ++i) {
+        my_nn_train(&neuro, &features, &targets, &hparams);
+        xs[i] = i;
+        ys[i] = my_nn_calc_error(&neuro, &features, &targets);
+    }
+    printf("%lf\n", my_nn_calc_error(&neuro, &features, &targets));
+
+    my_theme_t g_th = {
+        .point = sfRed,
+        .radius = 10
+    };
+
+    my_graph_t g = {
+        .type = points,
+        .xs = xs,
+        .ys = ys,
+        .pts_n = n,
+        .th = &g_th
+    };
+
+    my_graph_t *gs[] = {
+        &g
+    };
+
+    my_plot_t plt = {
+        .title = "neuro viz",
+        .gs = gs,
+        .gs_n = 1
+    };
+
+    my_theme_t plt_th = {
+        .bg = sfBlack,
+        .axis = sfWhite
+    };
+
+    my_plot_create(&plt, &plt_th);
+
+    my_plot_show(&plt);
+
+    my_matrix_free(4, &features, &targets, &targets_tr, &features_tr);
+    my_nn_free(&neuro);
+
+    sfRenderWindow_destroy(plt.window);
 
     return 0;
 }
