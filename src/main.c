@@ -55,7 +55,7 @@ double unknw_train_tar[] = {
 
 int main(void)
 {
-    srand(69);
+    srand(time(0));
 
     MAT_DECLA(features_tr);
     MAT_DECLA(features);
@@ -63,9 +63,9 @@ int main(void)
     MAT_DECLA(targets);
 
     my_matrix_create(4, 2, 1, &features_tr);
-    my_matrix_fill_from_array(&features_tr, and_train_fea, 8);
+    my_matrix_fill_from_array(&features_tr, xor_train_fea, 8);
     my_matrix_create(4, 1, 1, &targets_tr);
-    my_matrix_fill_from_array(&targets_tr, and_train_tar, 4);
+    my_matrix_fill_from_array(&targets_tr, xor_train_tar, 4);
 
     MAT_PRINT(features_tr);
     MAT_PRINT(targets_tr);
@@ -90,8 +90,8 @@ int main(void)
 
     my_nn_t neuro = {.name = "neuro"};
 
-    neuro.size = 2;
-    uint32_t dims[] = {features.m, targets.m};
+    neuro.size = 3;
+    uint32_t dims[] = {features.m, 2, targets.m};
 
     neuro.dims = dims;
 
@@ -117,6 +117,10 @@ int main(void)
         my_nn_train(&neuro, &features, &targets, &hparams);
         xs[i] = i;
         ys[i] = my_nn_calc_error(&neuro, &features, &targets);
+        if (ys[i] <= hparams.threshold) {
+            n = i + 1;
+            break;
+        }
     }
     printf("%lf\n", my_nn_calc_error(&neuro, &features, &targets));
 
