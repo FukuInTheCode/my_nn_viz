@@ -122,7 +122,7 @@ int main(void)
 
     my_params_t hparams = {
         .alpha = 1e-1,
-        .epoch = 10,
+        .epoch = 10*1000,
         .threshold = 1e-6,
         .show_tqdm = false
     };
@@ -142,7 +142,13 @@ int main(void)
 
     sfVideoMode mode = {1000, 1000, 32};
 
-    my_nn_viz_repr(&neuro, mode);
+    my_nn_dat_t data = {
+        .x = &features,
+        .y = &targets,
+        .hp = &hparams
+    };
+
+    my_nn_viz_repr_train(&neuro, mode, &data, 10);
 
     // free
     my_nn_free(&neuro);

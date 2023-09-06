@@ -1,6 +1,6 @@
 #include "../../includes/my.h"
 
-void my_nn_viz_repr(my_nn_t *nn, sfVideoMode mode, my_nn_dat_t *data, uint32_t steps)
+void my_nn_viz_repr_train(my_nn_t *nn, sfVideoMode mode, my_nn_dat_t *data, uint32_t steps)
 {
     sfRenderWindow *window = sfRenderWindow_create(mode,\
                                 nn->name, sfDefaultStyle, NULL);
@@ -19,6 +19,7 @@ void my_nn_viz_repr(my_nn_t *nn, sfVideoMode mode, my_nn_dat_t *data, uint32_t s
         }
         if (h < data->hp->epoch) {
             my_nn_train(nn, data->x, data->y, &hp);
+            usleep(100000);
             h += steps;
         }
         sfRenderWindow_clear(window, sfBlack);
