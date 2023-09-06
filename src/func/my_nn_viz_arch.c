@@ -9,25 +9,25 @@ typedef struct {
     my_nn_t *nn;
 } my_shit_t;
 
-static void draw_connections(my_nn_t *nn, sfRenderWindow *window, my_shit_t *s)
+static void draw_connections(sfRenderWindow *window, my_shit_t *s)
 {
     sfVector2u window_size = sfRenderWindow_getSize(window);
     sfColor start = COLOR1_W;
     sfColor end = COLOR2_W;
-    if (s->i != nn->size - 1) {
+    if (s->i != s->nn->size - 1) {
         sfVector2f pos = {
             .x = s->i * s->layer_hpad + PAD_X + s->radius * 2,
             .y = s->j * s->layer_vpad + PAD_Y + s->layer_vpad / 2
         };
-        double nlayer_vpad = (window_size.y - PAD_Y * 2) / (double)(nn->dims[s->i + 1]);
-        for (uint32_t k = 0; k < nn->dims[s->i + 1]; ++k) {
+        double nlayer_vpad = (window_size.y - PAD_Y * 2) / (double)(s->nn->dims[s->i + 1]);
+        for (uint32_t k = 0; k < s->nn->dims[s->i + 1]; ++k) {
             sfVector2f pos2 = {
                 .x = (s->i + 1) * s->layer_hpad + PAD_X + s->radius * 2,
                 .y = k * nlayer_vpad + PAD_Y + nlayer_vpad / 2
             };
             sfVertex connection[] = {
-                {pos, interpolate_color(start, end, nn->theta_arr[s->i].arr[k][s->j]), {0, 0}},
-                {pos2, interpolate_color(start, end, nn->theta_arr[s->i].arr[k][s->j]), {0, 0}}
+                {pos, interpolate_color(start, end, s->nn->theta_arr[s->i].arr[k][s->j]), {0, 0}},
+                {pos2, interpolate_color(start, end, s->nn->theta_arr[s->i].arr[k][s->j]), {0, 0}}
             };
             sfRenderWindow_drawPrimitives(window, connection, 2, sfLines, NULL);
         }
@@ -73,7 +73,7 @@ void my_nn_viz_arch(my_nn_t *nn, sfRenderWindow *window)
                 .j = j,
                 .nn = nn
             };
-            draw_connections(nn, window, &s);
+            draw_connections(window, &s);
             plot_neuron(window, &s, nn);
         }
     }
