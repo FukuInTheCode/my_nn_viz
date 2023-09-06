@@ -103,26 +103,11 @@ int main(void)
 
     my_params_t hparams = {
         .alpha = 1e-1,
-        .epoch = 1,
+        .epoch = 10*1000,
         .threshold = 1e-4
     };
-    uint32_t n = 10*1000;
-    double xs[n];
-    double ys[n];
-
-
-    printf("%lf\n", my_nn_calc_error(&neuro, &features, &targets));
-
-    for (uint32_t i = 0; i < n; ++i) {
-        my_nn_train(&neuro, &features, &targets, &hparams);
-        xs[i] = i;
-        ys[i] = my_nn_calc_error(&neuro, &features, &targets);
-        if (ys[i] <= hparams.threshold) {
-            n = i + 1;
-            break;
-        }
-    }
-    printf("%lf\n", my_nn_calc_error(&neuro, &features, &targets));
+    double xs[hparams.epoch];
+    double ys[hparams.epoch];
 
     my_theme_t g_th = {
         .point = sfRed,
@@ -133,9 +118,10 @@ int main(void)
         .type = points,
         .xs = xs,
         .ys = ys,
-        .pts_n = n,
         .th = &g_th
     };
+
+    
 
     my_graph_t *gs[] = {
         &g
