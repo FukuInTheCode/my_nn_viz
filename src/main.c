@@ -96,8 +96,6 @@ int main(void)
 {
     srand(time(0));
 
-    sleep(1);
-
     MAT_DECLA(features_tr);
     MAT_DECLA(features);
     MAT_DECLA(targets_tr);
@@ -136,7 +134,7 @@ int main(void)
 
     my_params_t hparams = {
         .alpha = 1e-1,
-        .epoch = 1,
+        .epoch = 10,
         .threshold = 1e-6,
         .show_tqdm = false
     };
@@ -154,10 +152,6 @@ int main(void)
 
     my_nn_create(&neuro);
 
-
-    // my_matrix_free(4, &features, &targets, &targets_tr, &features_tr);
-
-    my_nn_print(&neuro);
 
     sfColor start = {0, 255, 0, 255};
     sfColor end = {255, 0, 255, 255};
@@ -187,7 +181,8 @@ int main(void)
         }
         if (h < 10*1000) {
             my_nn_train(&neuro, &features, &targets, &hparams);
-            ++h;
+            usleep(100000);
+            h += hparams.epoch;
         }
         sfRenderWindow_clear(window, sfBlack);
         for (uint32_t i = 0; i < neuro.size; ++i) {
@@ -231,6 +226,7 @@ int main(void)
     }
     my_nn_free(&neuro);
 
+    my_matrix_free(4, &features, &targets, &targets_tr, &features_tr);
     sfRenderWindow_destroy(window);
     return 0;
 }
