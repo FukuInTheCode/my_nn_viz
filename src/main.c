@@ -121,16 +121,38 @@ int main(void)
         .th = &g_th
     };
 
-    
+    my_nn_viz_get_error_graph(&g, &neuro, &features, &targets, &hparams);
+    neuro.acti_type = base_type;
+    neuro.funcs.af = my_nn_gelu;
+    neuro.funcs.grad_af = my_nn_gelu_grad;
+
+    my_nn_create(&neuro);
+    double xs2[hparams.epoch];
+    double ys2[hparams.epoch];
+
+    my_theme_t g2_th = {
+        .point = sfBlue,
+        .radius = 10
+    };
+
+    my_graph_t g2 = {
+        .type = points,
+        .xs = xs2,
+        .ys = ys2,
+        .th = &g2_th
+    };
+
+    my_nn_viz_get_error_graph(&g2, &neuro, &features, &targets, &hparams);
 
     my_graph_t *gs[] = {
-        &g
+        &g,
+        &g2
     };
 
     my_plot_t plt = {
         .title = "neuro viz",
         .gs = gs,
-        .gs_n = 1
+        .gs_n = 2
     };
 
     my_theme_t plt_th = {
@@ -140,7 +162,9 @@ int main(void)
 
     my_plot_create(&plt, &plt_th);
 
-    my_plot_show(&plt);
+    printf("%lf, %lf\n", plt.ratio.x, plt.ratio.y);
+
+    // my_plot_show(&plt);
 
     my_matrix_free(4, &features, &targets, &targets_tr, &features_tr);
     my_nn_free(&neuro);

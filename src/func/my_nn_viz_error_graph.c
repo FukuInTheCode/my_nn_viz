@@ -13,7 +13,7 @@ void my_nn_viz_get_error_graph(my_graph_t *g, my_nn_t *nn, my_matrix_t *x,  my_m
         g->xs[i] = i;
         g->ys[i] = my_nn_calc_error(nn, x, y);
         if (g->ys[i] <= hp->threshold) {
-            n = i + 1;
+            g->pts_n = i + 1;
             return;
         }
     }
