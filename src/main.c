@@ -170,13 +170,30 @@ int main(void)
         for (uint32_t i = 0; i < neuro.size; ++i) {
             double layer_vpad = (window_size.y - padding.y * 2) / (double)(neuro.dims[i]);
             for (uint32_t j = 0; j < neuro.dims[i]; ++j) {
+                sfVector2f pos = {
+                    .x = i * layer_hpad + padding.x + radius * 2,
+                    .y = j * layer_vpad + padding.y + layer_vpad / 2
+                };
+                if (i != neuro.size - 1) {
+                    double nlayer_vpad = (window_size.y - padding.y * 2) / (double)(neuro.dims[i + 1]);
+                    for (uint32_t k = 0; k < neuro.dims[i + 1]; ++k) {
+                        sfVector2f pos2 = {
+                            .x = (i + 1) * layer_hpad + padding.x + radius * 2,
+                            .y = k * nlayer_vpad + padding.y + nlayer_vpad / 2
+                        };
+                        sfVertex connection[] = {
+                            {pos, sfWhite, {0, 0}},
+                            {pos2, sfWhite, {0, 0}}
+                        };
+                        sfRenderWindow_drawPrimitives(window, connection, 2, sfLines, NULL);
+
+                    }
+                }
+                pos.x -= radius;
+                pos.y -= radius;
                 sfCircleShape *pt = sfCircleShape_create();
                 sfCircleShape_setFillColor(pt, sfRed);
                 sfCircleShape_setRadius(pt, radius);
-                sfVector2f pos = {
-                    .x = i * layer_hpad + padding.x + radius,
-                    .y = j * layer_vpad + padding.y + layer_vpad / 2 - radius
-                };
                 sfCircleShape_setPosition(pt, pos);
                 sfRenderWindow_drawCircleShape(window, pt, NULL);
                 sfCircleShape_destroy(pt);
