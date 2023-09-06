@@ -159,6 +159,7 @@ int main(void)
     double layer_hpad = (window_size.x - padding.x * 2) / (double)neuro.size;
 
     double radius = 1. / 4. * layer_hpad;
+    radius = my_max_between(radius, my_max(neuro.dims, neuro.size));
 
     printf("%lf\n", radius);
 

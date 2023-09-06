@@ -50,3 +50,4 @@ double my_max(double *x, size_t size);
 double my_max_between(double x1, double x2);
 double my_min_between(double x1, double x2);
 double my_min(double *x, size_t size);
+double my_max_i(int *x, size_t size);
