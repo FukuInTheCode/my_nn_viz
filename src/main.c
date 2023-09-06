@@ -128,7 +128,7 @@ int main(void)
 
     my_nn_t neuro = {.name = "neuro"};
 
-    uint32_t dims[] = {features.m, 32, 32, targets.m};
+    uint32_t dims[] = {features.m, 3, 3, targets.m};
     neuro.size = sizeof(dims) / sizeof(dims[0]);
 
     neuro.dims = dims;
@@ -159,9 +159,6 @@ int main(void)
     double layer_hpad = (window_size.x - padding.x * 2) / (double)neuro.size;
 
     double radius = 1. / 4. * layer_hpad;
-    radius = my_max_between(radius, my_max(neuro.dims, neuro.size));
-
-    printf("%lf\n", radius);
 
     while (sfRenderWindow_isOpen(window)) {
         while (sfRenderWindow_pollEvent(window, &event)) {
