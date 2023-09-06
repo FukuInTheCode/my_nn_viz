@@ -140,7 +140,7 @@ int main(void)
 
     my_nn_t neuro = {.name = "neuro"};
 
-    uint32_t dims[] = {features.m, 3, 3, targets.m};
+    uint32_t dims[] = {features.m, 2, targets.m};
     neuro.size = sizeof(dims) / sizeof(dims[0]);
 
     neuro.dims = dims;
@@ -151,15 +151,16 @@ int main(void)
 
     my_nn_create(&neuro);
 
-    // my_nn_train(&neuro, &features, &targets, &hparams);
+    my_nn_train(&neuro, &features, &targets, &hparams);
 
     // my_matrix_free(4, &features, &targets, &targets_tr, &features_tr);
-    // my_nn_free(&neuro);
 
     my_nn_print(&neuro);
 
-    sfColor start = sfBlue;
-    sfColor end = sfRed;
+    sfColor start = {0, 255, 0, 255};
+    sfColor end = {255, 0, 255, 255};
+    sfColor start_w = {0, 0, 0, 0};
+    sfColor end_w = {255, 0, 0, 255};
 
     sfVideoMode mode = {1000, 1000, 32};
     sfRenderWindow *window = sfRenderWindow_create(mode, "test", sfDefaultStyle, NULL);
@@ -199,8 +200,8 @@ int main(void)
                             .y = k * nlayer_vpad + padding.y + nlayer_vpad / 2
                         };
                         sfVertex connection[] = {
-                            {pos, sfWhite, {0, 0}},
-                            {pos2, sfWhite, {0, 0}}
+                            {pos, interpolateColor(start_w, end_w, neuro.theta_arr[i].arr[k][j]), {0, 0}},
+                            {pos2, interpolateColor(start_w, end_w, neuro.theta_arr[i].arr[k][j]), {0, 0}}
                         };
                         sfRenderWindow_drawPrimitives(window, connection, 2, sfLines, NULL);
 
@@ -210,7 +211,7 @@ int main(void)
                 pos.y -= radius;
                 sfCircleShape *pt = sfCircleShape_create();
                 if (i == 0)
-                    sfCircleShape_setFillColor(pt, sfGreen);
+                    sfCircleShape_setFillColor(pt, sfRed);
                 else
                     sfCircleShape_setFillColor(pt, interpolateColor(start, end, neuro.bias_arr[i - 1].arr[j][0]));
 
@@ -223,6 +224,7 @@ int main(void)
 
         sfRenderWindow_display(window);
     }
+    my_nn_free(&neuro);
 
     sfRenderWindow_destroy(window);
     return 0;
