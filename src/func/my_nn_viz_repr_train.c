@@ -17,6 +17,7 @@ static void show(my_nn_t *nn, sfRenderWindow *window)
     sfRenderWindow_display(window);
 }
 
+// TODO show the current error of the nn, and the current steps in the training process
 void my_nn_viz_repr_train(my_nn_t *nn, sfVideoMode mode,\
                                 my_nn_dat_t *data, uint32_t steps)
 {

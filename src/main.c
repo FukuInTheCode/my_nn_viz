@@ -89,15 +89,15 @@ int main(void)
     MAT_DECLA(targets_tr);
     MAT_DECLA(targets);
 
-    my_matrix_create(4, 2, 1, &features_tr);
-    my_matrix_fill_from_array(&features_tr, xor_train_fea, 8);
-    my_matrix_create(4, 1, 1, &targets_tr);
-    my_matrix_fill_from_array(&targets_tr, xor_train_tar, 4);
+    // my_matrix_create(4, 2, 1, &features_tr);
+    // my_matrix_fill_from_array(&features_tr, xor_train_fea, 8);
+    // my_matrix_create(4, 1, 1, &targets_tr);
+    // my_matrix_fill_from_array(&targets_tr, xor_train_tar, 4);
 
-    // my_matrix_create(50, 1, 1, &features_tr);
-    // // my_matrix_create(25, 1, 1, &targets_tr);
-    // my_matrix_randfloat(10, -10, 1, &features_tr);
-    // my_matrix_applyfunc(&features_tr, fun, &targets_tr);
+    my_matrix_create(50, 1, 1, &features_tr);
+    // my_matrix_create(25, 1, 1, &targets_tr);
+    my_matrix_randfloat(10, -10, 1, &features_tr);
+    my_matrix_applyfunc(&features_tr, fun, &targets_tr);
 
     MAT_PRINT(features_tr);
     MAT_PRINT(targets_tr);
@@ -129,14 +129,14 @@ int main(void)
 
     my_nn_t neuro = {.name = "neuro"};
 
-    uint32_t dims[] = {features.m, 2, targets.m};
+    uint32_t dims[] = {features.m, 3, 3, targets.m};
     neuro.size = sizeof(dims) / sizeof(dims[0]);
 
     neuro.dims = dims;
 
     neuro.acti_type = base_type;
-    neuro.funcs.af = my_nn_gelu;
-    neuro.funcs.grad_af = my_nn_gelu_grad;
+    neuro.funcs.af = my_nn_sin;
+    neuro.funcs.grad_af = my_nn_sin_grad;
 
     my_nn_create(&neuro);
 
@@ -148,7 +148,7 @@ int main(void)
         .hp = &hparams
     };
 
-    my_nn_viz_repr_train(&neuro, mode, &data, 10);
+    my_nn_viz_repr_train(&neuro, mode, &data, 3);
 
     // free
     my_nn_free(&neuro);
