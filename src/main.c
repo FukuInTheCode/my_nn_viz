@@ -132,11 +132,12 @@ int main(void)
     // // MAT_PRINT(features);
     // // MAT_PRINT(targets);
 
-    // my_params_t hparams = {
-    //     .alpha = 1e-1,
-    //     .epoch = 100*1000,
-    //     .threshold = 1e-6
-    // };
+    my_params_t hparams = {
+        .alpha = 1e-1,
+        .epoch = 1,
+        .threshold = 1e-6,
+        .show_tqdm = false
+    };
 
     my_nn_t neuro = {.name = "neuro"};
 
@@ -145,13 +146,12 @@ int main(void)
 
     neuro.dims = dims;
 
-    // neuro.acti_type = base_type;
-    // neuro.funcs.af = my_nn_gelu
-    // neuro.funcs.grad_af = my_nn_gelu_grad;
+    neuro.acti_type = base_type;
+    neuro.funcs.af = my_nn_gelu;
+    neuro.funcs.grad_af = my_nn_gelu_grad;
 
     my_nn_create(&neuro);
 
-    my_nn_train(&neuro, &features, &targets, &hparams);
 
     // my_matrix_free(4, &features, &targets, &targets_tr, &features_tr);
 
@@ -159,7 +159,7 @@ int main(void)
 
     sfColor start = {0, 255, 0, 255};
     sfColor end = {255, 0, 255, 255};
-    sfColor start_w = {0, 0, 0, 0};
+    sfColor start_w = {0, 255, 255, 0};
     sfColor end_w = {255, 0, 0, 255};
 
     sfVideoMode mode = {1000, 1000, 32};
@@ -177,13 +177,16 @@ int main(void)
     double layer_hpad = (window_size.x - padding.x * 2) / (double)neuro.size;
 
     double radius = 1. / 4. * layer_hpad;
-
+    uint32_t h = 0;
     while (sfRenderWindow_isOpen(window)) {
         while (sfRenderWindow_pollEvent(window, &event)) {
             if (event.type == sfEvtClosed)
                 sfRenderWindow_close(window);
         }
-
+        if (h < 10*1000) {
+            my_nn_train(&neuro, &features, &targets, &hparams);
+            ++h;
+        }
         sfRenderWindow_clear(window, sfBlack);
         for (uint32_t i = 0; i < neuro.size; ++i) {
             double layer_vpad = (window_size.y - padding.y * 2) / (double)(neuro.dims[i]);
