@@ -149,11 +149,6 @@ int main(void)
 
     // calc variable
 
-    sfVector2f padding = {
-        .x = 50,
-        .y = 50
-    };
-
     uint32_t h = 0;
     // show loop
     while (sfRenderWindow_isOpen(window)) {

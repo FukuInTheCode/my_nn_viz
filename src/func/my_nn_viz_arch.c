@@ -2,6 +2,10 @@
 
 void my_nn_viz_arch(my_nn_t *nn, sfRenderWindow *window)
 {
+    sfVector2f padding = {
+        .x = 50,
+        .y = 50
+    };
     sfColor start = {0, 255, 0, 255};
     sfColor end = {255, 0, 255, 255};
     sfColor start_w = {0, 255, 255, 0};
