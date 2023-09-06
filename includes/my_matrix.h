@@ -32,8 +32,8 @@ typedef double (*temp_func)(double);
 void my_matrix_create(uint32_t m, uint32_t n, \
     uint32_t const count, ...);
 void my_matrix_identity(uint32_t const count, ...);
-void my_matrix_set(my_matrix_t *A, uint32_t const x,\
-                        uint32_t const y, double const  n);
+void my_matrix_set(my_matrix_t *A, uint32_t const m,\
+                        uint32_t const n, double const  x);
 void my_matrix_print(uint32_t const count, ...);
 void my_matrix_free(uint32_t const count, ...);
 void my_matrix_multiplybyscalar(my_matrix_t *A, double scalar, \
@@ -103,6 +103,7 @@ void my_matrix_swaprow_2(my_matrix_t *A, uint32_t const a, \
     uint32_t const b);
 void my_matrix_multiplybyscalar_2(my_matrix_t *A, double scalar);
 void my_matrix_transpose_2(my_matrix_t *A);
+double my_matrix_det(my_matrix_t *A);
 
 #ifdef MATRIX_INIT_STR
 
