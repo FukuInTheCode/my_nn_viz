@@ -18,7 +18,6 @@ static void draw_connections(my_nn_t *nn, sfRenderWindow *window, my_shit_t *s, 
             .y = j * s->layer_vpad + PAD_Y + s->layer_vpad / 2
         };
         double nlayer_vpad = (window_size.y - PAD_Y * 2) / (double)(nn->dims[s->i + 1]);
-        // for each next nn->
         for (uint32_t k = 0; k < nn->dims[s->i + 1]; ++k) {
             sfVector2f pos2 = {
                 .x = (s->i + 1) * s->layer_hpad + PAD_X + s->radius * 2,
@@ -31,6 +30,18 @@ static void draw_connections(my_nn_t *nn, sfRenderWindow *window, my_shit_t *s, 
             sfRenderWindow_drawPrimitives(window, connection, 2, sfLines, NULL);
         }
     }
+}
+
+static void plot_neuron(sfColor color, sfRenderWindow *window, sfVector2f pos, double radius)
+{
+    pos.x -= radius;
+    pos.y -= radius;
+    sfCircleShape *pt = sfCircleShape_create();
+    sfCircleShape_setFillColor(pt, color);
+    sfCircleShape_setRadius(pt, radius);
+    sfCircleShape_setPosition(pt, pos);
+    sfRenderWindow_drawCircleShape(window, pt, NULL);
+    sfCircleShape_destroy(pt);
 }
 
 void my_nn_viz_arch(my_nn_t *nn, sfRenderWindow *window)
@@ -57,17 +68,11 @@ void my_nn_viz_arch(my_nn_t *nn, sfRenderWindow *window)
             };
 
             draw_connections(nn, window, &s, j);
-            pos.x -= radius;
-            pos.y -= radius;
-            sfCircleShape *pt = sfCircleShape_create();
+
             if (i == 0)
-                sfCircleShape_setFillColor(pt, COLOR_0);
+                plot_neuron(COLOR_0, window, pos, radius);
             else
-                sfCircleShape_setFillColor(pt, interpolate_color(start, end, nn->bias_arr[i - 1].arr[j][0]));
-            sfCircleShape_setRadius(pt, radius);
-            sfCircleShape_setPosition(pt, pos);
-            sfRenderWindow_drawCircleShape(window, pt, NULL);
-            sfCircleShape_destroy(pt);
+                plot_neuron(interpolate_color(start, end, nn->bias_arr[i - 1].arr[j][0]), window, pos, radius);
         }
     }
 }
