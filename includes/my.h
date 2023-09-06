@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "my_nn_viz.h"
 
 #define ARRAY_LENGTH(arr) sizeof(arr) / sizeof(arr[0])

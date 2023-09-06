@@ -96,6 +96,8 @@ int main(void)
 {
     srand(time(0));
 
+    sleep(1);
+
     MAT_DECLA(features_tr);
     MAT_DECLA(features);
     MAT_DECLA(targets_tr);
