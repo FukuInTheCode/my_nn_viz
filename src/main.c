@@ -80,6 +80,18 @@ double f2(double x, my_p_t *p)
     return res;
 }
 
+sfColor interpolateColor(sfColor color1, sfColor color2, float value)
+{
+    sfColor result;
+
+    result.r = (sfUint8)((1 - value) * color1.r + value * color2.r);
+    result.g = (sfUint8)((1 - value) * color1.g + value * color2.g);
+    result.b = (sfUint8)((1 - value) * color1.b + value * color2.b);
+    result.a = (sfUint8)((1 - value) * color1.a + value * color2.a);
+
+    return result;
+}
+
 int main(void)
 {
     srand(time(0));
@@ -144,6 +156,11 @@ int main(void)
     // my_matrix_free(4, &features, &targets, &targets_tr, &features_tr);
     // my_nn_free(&neuro);
 
+    my_nn_print(&neuro);
+
+    sfColor start = sfBlue;
+    sfColor end = sfRed;
+
     sfVideoMode mode = {1000, 1000, 32};
     sfRenderWindow *window = sfRenderWindow_create(mode, "test", sfDefaultStyle, NULL);
 
@@ -192,7 +209,11 @@ int main(void)
                 pos.x -= radius;
                 pos.y -= radius;
                 sfCircleShape *pt = sfCircleShape_create();
-                sfCircleShape_setFillColor(pt, sfRed);
+                if (i == 0)
+                    sfCircleShape_setFillColor(pt, sfGreen);
+                else
+                    sfCircleShape_setFillColor(pt, interpolateColor(start, end, neuro.bias_arr[i - 1].arr[j][0]));
+
                 sfCircleShape_setRadius(pt, radius);
                 sfCircleShape_setPosition(pt, pos);
                 sfRenderWindow_drawCircleShape(window, pt, NULL);
