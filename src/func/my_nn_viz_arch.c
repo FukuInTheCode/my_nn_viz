@@ -7,7 +7,7 @@ static void draw_connections(my_nn_t *nn, sfRenderWindow *window, uint32_t i, ui
         .y = 50
     };
     if (i != nn->size - 1) {
-        double nlayer_vpad = (window_size.y - padding.y * 2) / (double)(nn->dims[i + 1]);
+        double nlayer_vpad = (window_size.y - PAD_Y * 2) / (double)(nn->dims[i + 1]);
         // for each next nn->
         for (uint32_t k = 0; k < nn->dims[i + 1]; ++k) {
             sfVector2f pos2 = {

@@ -4,8 +4,8 @@
 #include "my_neuralnetwork.h"
 #include "my_plot.h"
 
-#define PAD_X 50
-#define PAD_Y 50
+#define PAD_X 50.
+#define PAD_Y 50.
 #define COLOR1_W {0, 255, 255, 255}
 #define COLOR2_W {255, 0, 0, 255}
 #define COLOR1_B {0, 255, 0, 255}
