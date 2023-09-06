@@ -141,38 +141,6 @@ int main(void)
     my_nn_create(&neuro);
 
     sfVideoMode mode = {1000, 1000, 32};
-    sfRenderWindow *window = sfRenderWindow_create(mode, "test", sfDefaultStyle, NULL);
-
-    sfEvent event;
-
-    sfVector2u window_size = sfRenderWindow_getSize(window);
-
-    // calc variable
-
-    uint32_t h = 0;
-    // show loop
-    while (sfRenderWindow_isOpen(window)) {
-        // event
-        while (sfRenderWindow_pollEvent(window, &event)) {
-            if (event.type == sfEvtClosed)
-                sfRenderWindow_close(window);
-        }
-        // training
-        if (h < 10*1000) {
-            my_nn_train(&neuro, &features, &targets, &hparams);
-            usleep(100000);
-            h += hparams.epoch;
-        }
-        // ploting
-        sfRenderWindow_clear(window, sfBlack);
-        // loop for each layer
-
-        my_nn_viz_arch(&neuro, window);
-
-        // end ploting
-
-        sfRenderWindow_display(window);
-    }
 
     // free
     my_nn_free(&neuro);
