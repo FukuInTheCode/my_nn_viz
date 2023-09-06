@@ -142,10 +142,11 @@ int main(void)
 
     sfVideoMode mode = {1000, 1000, 32};
 
+    my_nn_viz_repr(&neuro, mode);
+
     // free
     my_nn_free(&neuro);
 
     my_matrix_free(4, &features, &targets, &targets_tr, &features_tr);
-    sfRenderWindow_destroy(window);
     return 0;
 }

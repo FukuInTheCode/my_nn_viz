@@ -15,4 +15,5 @@ void my_nn_viz_repr(my_nn_t *nn, sfVideoMode mode)
         my_nn_viz_arch(nn, window);
         sfRenderWindow_display(window);
     }
+    sfRenderWindow_destroy(window);
 }
