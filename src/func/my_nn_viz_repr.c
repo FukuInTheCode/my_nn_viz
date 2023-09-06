@@ -3,7 +3,7 @@
 void my_nn_viz_repr(my_nn_t *nn, sfVideoMode mode)
 {
     sfRenderWindow *window = sfRenderWindow_create(mode,\
-                                "test", sfDefaultStyle, NULL);
+                                nn->name, sfDefaultStyle, NULL);
     sfEvent event;
     while (sfRenderWindow_isOpen(window)) {
         while (sfRenderWindow_pollEvent(window, &event)) {
