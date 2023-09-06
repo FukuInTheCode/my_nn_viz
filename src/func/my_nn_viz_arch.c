@@ -6,6 +6,7 @@ typedef struct {
     double radius;
     uint32_t i;
     uint32_t j;
+    my_nn_t *nn;
 } my_shit_t;
 
 static void draw_connections(my_nn_t *nn, sfRenderWindow *window, my_shit_t *s)
@@ -43,7 +44,8 @@ static void plot_neuron(sfRenderWindow *window, my_shit_t *s, my_nn_t *nn)
     };
     sfColor color = COLOR_0;
     if (s->i != 0)
-        color = interpolate_color(start, end, nn->bias_arr[s->i - 1].arr[s->j][0]);
+        color = interpolate_color(start, end,\
+                    nn->bias_arr[s->i - 1].arr[s->j][0]);
     pos.x -= s->radius;
     pos.y -= s->radius;
     sfCircleShape *pt = sfCircleShape_create();
@@ -60,17 +62,17 @@ void my_nn_viz_arch(my_nn_t *nn, sfRenderWindow *window)
     double layer_hpad = (window_size.x - PAD_X * 2) / (double)nn->size;
     double radius = 1. / 4. * layer_hpad;
     for (uint32_t i = 0; i < nn->size; ++i) {
-        double layer_vpad = (window_size.y - PAD_Y * 2) / (double)(nn->dims[i]);
+        double layer_vpad = (window_size.y - PAD_Y * 2) /\
+                                        (double)(nn->dims[i]);
         for (uint32_t j = 0; j < nn->dims[i]; ++j) {
-
             my_shit_t s = {
                 .layer_hpad = layer_hpad,
                 .layer_vpad = layer_vpad,
                 .radius = radius,
                 .i = i,
-                .j = j
+                .j = j,
+                .nn = nn
             };
-
             draw_connections(nn, window, &s);
             plot_neuron(window, &s, nn);
         }
