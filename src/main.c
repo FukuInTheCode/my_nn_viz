@@ -128,8 +128,8 @@ int main(void)
 
     my_nn_t neuro = {.name = "neuro"};
 
-    neuro.size = 5;
-    uint32_t dims[] = {features.m, 2, 4, 2, targets.m};
+    uint32_t dims[] = {features.m, 32, 32, targets.m};
+    neuro.size = sizeof(dims) / sizeof(dims[0]);
 
     neuro.dims = dims;
 
@@ -158,6 +158,10 @@ int main(void)
 
     double layer_hpad = (window_size.x - padding.x * 2) / (double)neuro.size;
 
+    double radius = 1. / 4. * layer_hpad;
+
+    printf("%lf\n", radius);
+
     while (sfRenderWindow_isOpen(window)) {
         while (sfRenderWindow_pollEvent(window, &event)) {
             if (event.type == sfEvtClosed)
@@ -170,10 +174,10 @@ int main(void)
             for (uint32_t j = 0; j < neuro.dims[i]; ++j) {
                 sfCircleShape *pt = sfCircleShape_create();
                 sfCircleShape_setFillColor(pt, sfRed);
-                sfCircleShape_setRadius(pt, 10);
+                sfCircleShape_setRadius(pt, radius);
                 sfVector2f pos = {
-                    .x = i * layer_hpad + padding.x + layer_hpad / 2,
-                    .y = j * layer_vpad + padding.y + layer_vpad / 2
+                    .x = i * layer_hpad + padding.x + radius,
+                    .y = j * layer_vpad + padding.y + layer_vpad / 2 - radius
                 };
                 sfCircleShape_setPosition(pt, pos);
                 sfRenderWindow_drawCircleShape(window, pt, NULL);
