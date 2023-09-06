@@ -89,15 +89,15 @@ int main(void)
     MAT_DECLA(targets_tr);
     MAT_DECLA(targets);
 
-    // my_matrix_create(4, 2, 1, &features_tr);
-    // my_matrix_fill_from_array(&features_tr, xor_train_fea, 8);
-    // my_matrix_create(4, 1, 1, &targets_tr);
-    // my_matrix_fill_from_array(&targets_tr, xor_train_tar, 4);
+    my_matrix_create(4, 2, 1, &features_tr);
+    my_matrix_fill_from_array(&features_tr, xor_train_fea, 8);
+    my_matrix_create(4, 1, 1, &targets_tr);
+    my_matrix_fill_from_array(&targets_tr, xor_train_tar, 4);
 
-    my_matrix_create(50, 1, 1, &features_tr);
-    // my_matrix_create(25, 1, 1, &targets_tr);
-    my_matrix_randfloat(10, -10, 1, &features_tr);
-    my_matrix_applyfunc(&features_tr, fun, &targets_tr);
+    // my_matrix_create(50, 1, 1, &features_tr);
+    // // my_matrix_create(25, 1, 1, &targets_tr);
+    // my_matrix_randfloat(10, -10, 1, &features_tr);
+    // my_matrix_applyfunc(&features_tr, fun, &targets_tr);
 
     MAT_PRINT(features_tr);
     MAT_PRINT(targets_tr);
@@ -117,87 +117,73 @@ int main(void)
     my_matrix_transpose(&features_tr, &features);
     my_matrix_transpose(&targets_tr, &targets);
 
-    // MAT_PRINT(features);
-    // MAT_PRINT(targets);
+    // // MAT_PRINT(features);
+    // // MAT_PRINT(targets);
 
-    my_params_t hparams = {
-        .alpha = 1e-1,
-        .epoch = 100*1000,
-        .threshold = 1e-6
-    };
+    // my_params_t hparams = {
+    //     .alpha = 1e-1,
+    //     .epoch = 100*1000,
+    //     .threshold = 1e-6
+    // };
 
     my_nn_t neuro = {.name = "neuro"};
 
-    neuro.size = 4;
-    uint32_t dims[] = {features.m, 32, 32, targets.m};
+    neuro.size = 5;
+    uint32_t dims[] = {features.m, 2, 2, 2, targets.m};
 
     neuro.dims = dims;
 
-    neuro.acti_type = base_type;
-    neuro.funcs.af = my_nn_sigmoid;
-    neuro.funcs.grad_af = my_nn_sigmoid_grad;
+    // neuro.acti_type = base_type;
+    // neuro.funcs.af = my_nn_gelu
+    // neuro.funcs.grad_af = my_nn_gelu_grad;
 
     my_nn_create(&neuro);
 
-    my_p_t p = {
-        .nn = &neuro,
-        .x_max = tmp_max,
-        .x_min = tmp_min,
-        .y_max = tmp_max_tar,
-        .y_min = tmp_min_tar,
+    // my_nn_train(&neuro, &features, &targets, &hparams);
+
+    // my_matrix_free(4, &features, &targets, &targets_tr, &features_tr);
+    // my_nn_free(&neuro);
+
+    sfVideoMode mode = {1000, 1000, 32};
+    sfRenderWindow *window = sfRenderWindow_create(mode, "test", sfDefaultStyle, NULL);
+
+    sfEvent event;
+
+    sfVector2u window_size = sfRenderWindow_getSize(window);
+
+    sfVector2f padding = {
+        .x = 50,
+        .y = 50
     };
 
-    my_nn_train(&neuro, &features, &targets, &hparams);
+    double layer_hpad = (window_size.x - padding.x * 2) / (double)neuro.size;
 
-    printf("%lf\n", my_nn_calc_error(&neuro, &features, &targets));
+    while (sfRenderWindow_isOpen(window)) {
+        while (sfRenderWindow_pollEvent(window, &event)) {
+            if (event.type == sfEvtClosed)
+                sfRenderWindow_close(window);
+        }
 
-    MAT_DECLA(pre);
+        sfRenderWindow_clear(window, sfBlack);
+        for (uint32_t i = 0; i < neuro.size; ++i) {
+            double layer_vpad = (window_size.y - padding.y * 2) / (double)(neuro.dims[i]);
+            for (uint32_t j = 0; j < neuro.dims[i]; ++j) {
+                sfCircleShape *pt = sfCircleShape_create();
+                sfCircleShape_setFillColor(pt, sfRed);
+                sfCircleShape_setRadius(pt, 10);
+                sfVector2f pos = {
+                    .x = i * layer_hpad + padding.x + layer_hpad / 2,
+                    .y = j * layer_vpad + padding.y
+                };
+                sfCircleShape_setPosition(pt, pos);
+                sfRenderWindow_drawCircleShape(window, pt, NULL);
+                sfCircleShape_destroy(pt);
+            }
+        }
 
-    my_nn_predict(&neuro, &features, &pre);
+        sfRenderWindow_display(window);
+    }
 
-    my_matrix_transpose_2(&pre);
-
-    my_matrix_multiplybyscalar_2(&pre, tmp_max_tar);
-
-    my_matrix_addscalar_2(&pre, tmp_min_tar);
-
-    MAT_PRINT(pre);
-
-    MAT_FREE(pre);
-
-    my_theme_t g_th = {
-        .point = sfRed,
-        .radius = 10
-    };
-    my_theme_t g2_th = {
-        .point = sfBlue,
-        .radius = 7
-    };
-
-    my_theme_t plt_th = {
-        .bg = sfBlack,
-        .axis = sfWhite
-    };
-
-    GRAPH_DECLA(g);
-    g.params = &p;
-    my_graph_create_f2(&g, 1000, &g_th, f2);
-    GRAPH_DECLA(g2);
-    my_graph_create_f(&g2, 100, &g2_th, fun);
-
-    PLOT_DECLA(plt, neuro_viz);
-
-    my_plot_create(&plt, &plt_th);
-
-    my_plot_append(&plt, &g);
-    my_plot_append(&plt, &g2);
-
-    my_plot_show(&plt);
-
-    my_matrix_free(4, &features, &targets, &targets_tr, &features_tr);
-    my_nn_free(&neuro);
-
-    my_plot_free(&plt);
-
+    sfRenderWindow_destroy(window);
     return 0;
 }
