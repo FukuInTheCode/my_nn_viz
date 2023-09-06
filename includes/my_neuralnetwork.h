@@ -3,6 +3,8 @@
 
 #include "my_matrix.h"
 
+#define NN_DECLA(n) my_nn_t n = {.name = #n, .size = 0}
+
 typedef double (*activ_func_temp)(double);
 typedef double (*activ_func_temp2)(double *, double);
 
@@ -40,6 +42,7 @@ typedef struct {
     double alpha;
     uint32_t epoch;
     double threshold;
+    bool show_tqdm;
 } my_params_t;
 
 void my_nn_create(my_nn_t *nn);

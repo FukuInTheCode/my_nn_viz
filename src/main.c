@@ -55,7 +55,29 @@ double unknw_train_tar[] = {
 
 double fun(double x)
 {
-    return x * x;
+    return x * x * x;
+}
+
+typedef struct {
+    my_nn_t *nn;
+    double x_max;
+    double y_max;
+    double y_min;
+    double x_min;
+
+} my_p_t;
+
+double f2(double x, my_p_t *p)
+{
+    MAT_DECLA(A);
+    my_matrix_create(1, 1, 1, &A);
+    my_matrix_set(&A, 0, 0, (x - p->x_min) / p->x_max);
+    MAT_DECLA(pre);
+    my_nn_predict(p->nn, &A, &pre);
+    double res = pre.arr[0][0] * p->y_max + p->y_min;
+    my_matrix_free(2, &A, &pre);
+    // printf("%lf, %lf\n", x, res);
+    return res;
 }
 
 int main(void)
@@ -72,9 +94,9 @@ int main(void)
     // my_matrix_create(4, 1, 1, &targets_tr);
     // my_matrix_fill_from_array(&targets_tr, xor_train_tar, 4);
 
-    my_matrix_create(25, 1, 1, &features_tr);
+    my_matrix_create(50, 1, 1, &features_tr);
     // my_matrix_create(25, 1, 1, &targets_tr);
-    my_matrix_randint(10, -10, 1, &features_tr);
+    my_matrix_randfloat(10, -10, 1, &features_tr);
     my_matrix_applyfunc(&features_tr, fun, &targets_tr);
 
     MAT_PRINT(features_tr);
@@ -98,116 +120,58 @@ int main(void)
     // MAT_PRINT(features);
     // MAT_PRINT(targets);
 
+    my_params_t hparams = {
+        .alpha = 1e-1,
+        .epoch = 100*1000,
+        .threshold = 1e-6
+    };
+
     my_nn_t neuro = {.name = "neuro"};
 
-    neuro.size = 3;
-    uint32_t dims[] = {features.m, 3, 3, targets.m};
+    neuro.size = 4;
+    uint32_t dims[] = {features.m, 32, 32, targets.m};
 
     neuro.dims = dims;
 
-    neuro.acti_type = base_type;
-    neuro.funcs.af = my_nn_sin;
-    neuro.funcs.grad_af = my_nn_sin_grad;
-
-    my_nn_create(&neuro);
-
-    my_params_t hparams = {
-        .alpha = 1e-1,
-        .epoch = 10*1000,
-        .threshold = 1e-4
-    };
-    double xs[hparams.epoch];
-    double ys[hparams.epoch];
-
-    my_theme_t g_th = {
-        .point = sfRed,
-        .radius = 10
-    };
-
-    my_graph_t g = {
-        .type = points,
-        .xs = xs,
-        .ys = ys,
-        .th = &g_th
-    };
-
-    my_nn_viz_get_error_graph(&g, &neuro, &features, &targets, &hparams);
-
-    neuro.acti_type = base_type;
-    neuro.funcs.af = my_nn_gelu;
-    neuro.funcs.grad_af = my_nn_gelu_grad;
-
-    my_nn_create(&neuro);
-    double xs2[hparams.epoch];
-    double ys2[hparams.epoch];
-
-    my_theme_t g2_th = {
-        .point = sfBlue,
-        .radius = 10
-    };
-
-    my_graph_t g2 = {
-        .type = points,
-        .xs = xs2,
-        .ys = ys2,
-        .th = &g2_th
-    };
-
-    my_nn_viz_get_error_graph(&g2, &neuro, &features, &targets, &hparams);
     neuro.acti_type = base_type;
     neuro.funcs.af = my_nn_sigmoid;
     neuro.funcs.grad_af = my_nn_sigmoid_grad;
 
     my_nn_create(&neuro);
-    double xs3[hparams.epoch];
-    double ys3[hparams.epoch];
 
-    my_theme_t g3_th = {
-        .point = sfGreen,
+    my_p_t p = {
+        .nn = &neuro,
+        .x_max = tmp_max,
+        .x_min = tmp_min,
+        .y_max = tmp_max_tar,
+        .y_min = tmp_min_tar,
+    };
+
+    my_nn_train(&neuro, &features, &targets, &hparams);
+
+    printf("%lf\n", my_nn_calc_error(&neuro, &features, &targets));
+
+    MAT_DECLA(pre);
+
+    my_nn_predict(&neuro, &features, &pre);
+
+    my_matrix_transpose_2(&pre);
+
+    my_matrix_multiplybyscalar_2(&pre, tmp_max_tar);
+
+    my_matrix_addscalar_2(&pre, tmp_min_tar);
+
+    MAT_PRINT(pre);
+
+    MAT_FREE(pre);
+
+    my_theme_t g_th = {
+        .point = sfRed,
         .radius = 10
     };
-
-    my_graph_t g3 = {
-        .type = points,
-        .xs = xs3,
-        .ys = ys3,
-        .th = &g3_th
-    };
-
-    my_nn_viz_get_error_graph(&g3, &neuro, &features, &targets, &hparams);
-    neuro.acti_type = base_type;
-    neuro.funcs.af = my_nn_tanh;
-    neuro.funcs.grad_af = my_nn_tanh_grad;
-
-    my_nn_create(&neuro);
-    double xs4[hparams.epoch];
-    double ys4[hparams.epoch];
-
-    my_theme_t g4_th = {
-        .point = sfYellow,
-        .radius = 10
-    };
-
-    my_graph_t g4 = {
-        .type = points,
-        .xs = xs4,
-        .ys = ys4,
-        .th = &g4_th
-    };
-
-    my_nn_viz_get_error_graph(&g4, &neuro, &features, &targets, &hparams);
-
-    my_graph_t *gs[] = {
-        &g,
-        &g2,
-        &g3,
-        &g4
-    };
-
-    my_plot_t plt = {
-        .title = "neuro viz",
-        .gs = gs,
-        .gs_n = 4
+    my_theme_t g2_th = {
+        .point = sfBlue,
+        .radius = 7
     };
 
     my_theme_t plt_th = {
@@ -215,14 +179,25 @@ int main(void)
         .axis = sfWhite
     };
 
+    GRAPH_DECLA(g);
+    g.params = &p;
+    my_graph_create_f2(&g, 1000, &g_th, f2);
+    GRAPH_DECLA(g2);
+    my_graph_create_f(&g2, 100, &g2_th, fun);
+
+    PLOT_DECLA(plt, neuro_viz);
+
     my_plot_create(&plt, &plt_th);
+
+    my_plot_append(&plt, &g);
+    my_plot_append(&plt, &g2);
 
     my_plot_show(&plt);
 
     my_matrix_free(4, &features, &targets, &targets_tr, &features_tr);
     my_nn_free(&neuro);
 
-    sfRenderWindow_destroy(plt.window);
+    my_plot_free(&plt);
 
     return 0;
 }
