@@ -1,13 +1,13 @@
 #include "../../includes/my.h"
 
 static uint32_t train(my_nn_t *nn, uint32_t h, my_nn_dat_t *data,\
-                                                    uint32_t steps)
+                                                    my_params_t *hp)
 {
     if (h < data->hp->epoch) {
-        my_nn_train(nn, data->x, data->y, &hp);
+        my_nn_train(nn, data->x, data->y, hp);
         usleep(100000);
     }
-    return h + steps;
+    return h + hp->epoch;
 }
 
 static void show(my_nn_t *nn, sfRenderWindow *window)
@@ -35,7 +35,7 @@ void my_nn_viz_repr_train(my_nn_t *nn, sfVideoMode mode,\
             if (event.type == sfEvtClosed)
                 sfRenderWindow_close(window);
         }
-        h = train(nn, h, data, steps);
+        h = train(nn, h, data, &hp);
         show(nn, window);
     }
     sfRenderWindow_destroy(window);
