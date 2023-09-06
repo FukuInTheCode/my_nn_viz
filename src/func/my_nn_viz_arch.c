@@ -61,7 +61,6 @@ void my_nn_viz_arch(my_nn_t *nn, sfRenderWindow *window)
     double radius = 1. / 4. * layer_hpad;
     for (uint32_t i = 0; i < nn->size; ++i) {
         double layer_vpad = (window_size.y - PAD_Y * 2) / (double)(nn->dims[i]);
-        // for each nn->of each layer
         for (uint32_t j = 0; j < nn->dims[i]; ++j) {
 
             my_shit_t s = {
