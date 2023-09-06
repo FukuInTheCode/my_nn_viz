@@ -9,6 +9,21 @@ typedef struct {
     my_nn_t *nn;
 } my_shit_t;
 
+static draw_connection(my_shit_t *s, sfRenderWindow *window, double nlayer_vpad, sfVector2f pos)
+{
+    for (uint32_t k = 0; k < s->nn->dims[s->i + 1]; ++k) {
+        sfVector2f pos2 = {
+            .x = (s->i + 1) * s->layer_hpad + PAD_X + s->radius * 2,
+            .y = k * nlayer_vpad + PAD_Y + nlayer_vpad / 2
+        };
+        sfVertex connection[] = {
+            {pos, interpolate_color(start, end, s->nn->theta_arr[s->i].arr[k][s->j]), {0, 0}},
+            {pos2, interpolate_color(start, end, s->nn->theta_arr[s->i].arr[k][s->j]), {0, 0}}
+        };
+        sfRenderWindow_drawPrimitives(window, connection, 2, sfLines, NULL);
+    }
+}
+
 static void draw_connections(sfRenderWindow *window, my_shit_t *s)
 {
     sfVector2u window_size = sfRenderWindow_getSize(window);
@@ -20,17 +35,7 @@ static void draw_connections(sfRenderWindow *window, my_shit_t *s)
             .y = s->j * s->layer_vpad + PAD_Y + s->layer_vpad / 2
         };
         double nlayer_vpad = (window_size.y - PAD_Y * 2) / (double)(s->nn->dims[s->i + 1]);
-        for (uint32_t k = 0; k < s->nn->dims[s->i + 1]; ++k) {
-            sfVector2f pos2 = {
-                .x = (s->i + 1) * s->layer_hpad + PAD_X + s->radius * 2,
-                .y = k * nlayer_vpad + PAD_Y + nlayer_vpad / 2
-            };
-            sfVertex connection[] = {
-                {pos, interpolate_color(start, end, s->nn->theta_arr[s->i].arr[k][s->j]), {0, 0}},
-                {pos2, interpolate_color(start, end, s->nn->theta_arr[s->i].arr[k][s->j]), {0, 0}}
-            };
-            sfRenderWindow_drawPrimitives(window, connection, 2, sfLines, NULL);
-        }
+        draw_connection(s, window, nlayer_vpad, pos);
     }
 }
 
