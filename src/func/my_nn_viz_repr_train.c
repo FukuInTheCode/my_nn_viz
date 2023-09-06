@@ -1,6 +1,7 @@
 #include "../../includes/my.h"
 
-static uint32_t train(my_nn_t *nn, uint32_t h, my_nn_dat_t *data, uint32_t steps)
+static uint32_t train(my_nn_t *nn, uint32_t h, my_nn_dat_t *data,\
+                                                    uint32_t steps)
 {
     if (h < data->hp->epoch) {
         my_nn_train(nn, data->x, data->y, &hp);
@@ -16,7 +17,8 @@ static void show(my_nn_t *nn, sfRenderWindow *window)
     sfRenderWindow_display(window);
 }
 
-void my_nn_viz_repr_train(my_nn_t *nn, sfVideoMode mode, my_nn_dat_t *data, uint32_t steps)
+void my_nn_viz_repr_train(my_nn_t *nn, sfVideoMode mode,\
+                                my_nn_dat_t *data, uint32_t steps)
 {
     sfRenderWindow *window = sfRenderWindow_create(mode,\
                                 nn->name, sfDefaultStyle, NULL);
