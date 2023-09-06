@@ -165,6 +165,8 @@ int main(void)
 
     sfVector2u window_size = sfRenderWindow_getSize(window);
 
+    // calc variable
+
     sfVector2f padding = {
         .x = 50,
         .y = 50
@@ -174,19 +176,25 @@ int main(void)
 
     double radius = 1. / 4. * layer_hpad;
     uint32_t h = 0;
+    // show loop
     while (sfRenderWindow_isOpen(window)) {
+        // event
         while (sfRenderWindow_pollEvent(window, &event)) {
             if (event.type == sfEvtClosed)
                 sfRenderWindow_close(window);
         }
+        // training
         if (h < 10*1000) {
             my_nn_train(&neuro, &features, &targets, &hparams);
             usleep(100000);
             h += hparams.epoch;
         }
+        // ploting
         sfRenderWindow_clear(window, sfBlack);
+        // loop for each layer
         for (uint32_t i = 0; i < neuro.size; ++i) {
             double layer_vpad = (window_size.y - padding.y * 2) / (double)(neuro.dims[i]);
+            // for each neuro of each layer
             for (uint32_t j = 0; j < neuro.dims[i]; ++j) {
                 sfVector2f pos = {
                     .x = i * layer_hpad + padding.x + radius * 2,
@@ -194,6 +202,7 @@ int main(void)
                 };
                 if (i != neuro.size - 1) {
                     double nlayer_vpad = (window_size.y - padding.y * 2) / (double)(neuro.dims[i + 1]);
+                    // for each next neuron
                     for (uint32_t k = 0; k < neuro.dims[i + 1]; ++k) {
                         sfVector2f pos2 = {
                             .x = (i + 1) * layer_hpad + padding.x + radius * 2,
@@ -221,9 +230,12 @@ int main(void)
                 sfCircleShape_destroy(pt);
             }
         }
+        // end ploting
 
         sfRenderWindow_display(window);
     }
+
+    // free
     my_nn_free(&neuro);
 
     my_matrix_free(4, &features, &targets, &targets_tr, &features_tr);
