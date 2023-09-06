@@ -4,6 +4,10 @@
 #include "SFML/Graphics.h"
 #include "my_math.h"
 
+#define PLOT_DECLA(nvar, ti) my_plot_t nvar = {.title = #ti, .gs_n = 0}
+
+#define GRAPH_DECLA(name) my_graph_t name = {.max_pts_n = 0};
+
 typedef double (*func)(double);
 typedef double (*func2)(double, void *);
 
@@ -64,5 +68,12 @@ void my_plot_axis(my_plot_t *plt);
 void my_plot_pts(my_plot_t *plt, my_graph_t *g);
 void my_plot_func(my_plot_t *plt, my_graph_t *g);
 void my_plot_func2(my_plot_t *plt, my_graph_t *g);
+void my_plot_free(my_plot_t *plt);
+void my_plot_append(my_plot_t *plt, my_graph_t *g);
+void calc_ratio(my_plot_t *plt);
+void my_graph_create_f2(my_graph_t *g, uint32_t n, my_theme_t *th, func2 f);
+void my_graph_create_f(my_graph_t *g, uint32_t n, my_theme_t *th, func f);
+void my_graph_create_pts(my_graph_t *g, uint32_t n, my_theme_t *th);
+void my_graph_set_pts(my_graph_t *g, double *xs, double *ys);
 
 #endif
