@@ -129,7 +129,7 @@ int main(void)
     my_nn_t neuro = {.name = "neuro"};
 
     neuro.size = 5;
-    uint32_t dims[] = {features.m, 2, 2, 2, targets.m};
+    uint32_t dims[] = {features.m, 2, 4, 2, targets.m};
 
     neuro.dims = dims;
 
@@ -173,7 +173,7 @@ int main(void)
                 sfCircleShape_setRadius(pt, 10);
                 sfVector2f pos = {
                     .x = i * layer_hpad + padding.x + layer_hpad / 2,
-                    .y = j * layer_vpad + padding.y
+                    .y = j * layer_vpad + padding.y + layer_vpad / 2
                 };
                 sfCircleShape_setPosition(pt, pos);
                 sfRenderWindow_drawCircleShape(window, pt, NULL);
