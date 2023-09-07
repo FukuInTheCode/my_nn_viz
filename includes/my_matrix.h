@@ -110,7 +110,8 @@ void my_matrix_copy_array(my_matrix_t **arr, my_matrix_t **copy,\
                                     uint32_t size, char *common_name);
 uint32_t my_matrix_find_col_index(my_matrix_t *A, uint32_t m,  double x);
 uint32_t my_matrix_find_row_index(my_matrix_t *A, uint32_t n,  double x);
-void my_matrix_linspace(my_matrix_t *m, double start, double stop, uint32_t num);
+void my_matrix_linspace(my_matrix_t *m, double start,\
+                                double stop, uint32_t num);
 
 #ifdef MATRIX_INIT_STR
 
