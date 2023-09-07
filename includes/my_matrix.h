@@ -3,7 +3,7 @@
 
 #include "./my_math.h"
 
-//  TODO add meshgrid / ravel
+//  TODO add meshgrid
 
 #define FALSE 0
 
@@ -118,6 +118,8 @@ void my_matrix_transform(my_matrix_t *A, uint32_t m,\
 void my_matrix_ravel(my_matrix_t *A, my_matrix_t *result);
 void my_matrix_transform_2(my_matrix_t *A, uint32_t m, uint32_t n);
 void my_matrix_ravel_2(my_matrix_t *A);
+void my_matrix_meshgrid(my_matrix_t *x, my_matrix_t *y,\
+                            my_matrix_t *xx, my_matrix_t *yy);
 
 #ifdef MATRIX_INIT_STR
 
