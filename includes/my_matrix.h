@@ -116,6 +116,7 @@ void my_matrix_setall(my_matrix_t *A, double const  x);
 void my_matrix_transform(my_matrix_t *A, uint32_t m,\
                             uint32_t n, my_matrix_t *result);
 void my_matrix_ravel(my_matrix_t *A, my_matrix_t *result);
+void my_matrix_transform_2(my_matrix_t *A, uint32_t m, uint32_t n);
 
 #ifdef MATRIX_INIT_STR
 
