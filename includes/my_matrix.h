@@ -121,6 +121,7 @@ void my_matrix_ravel_2(my_matrix_t *A);
 void my_matrix_meshgrid(my_matrix_t *x, my_matrix_t *y,\
                             my_matrix_t *xx, my_matrix_t *yy);
 void my_matrix_meshgrid_2(my_matrix_t *x, my_matrix_t *y);
+void my_matrix_to_array(my_matrix_t *A, double **arr);
 
 #ifdef MATRIX_INIT_STR
 
