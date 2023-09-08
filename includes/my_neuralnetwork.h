@@ -92,3 +92,4 @@ double my_nn_atan_grad(double x);
 double my_nn_atan(double x);
 void my_nn_print(my_nn_t *nn);
 void my_nn_copy(my_nn_t *nn, my_nn_t *copy);
+void my_nn_to_array(my_nn_t *nn, double **res);
