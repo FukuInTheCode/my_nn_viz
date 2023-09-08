@@ -94,3 +94,4 @@ void my_nn_print(my_nn_t *nn);
 void my_nn_copy(my_nn_t *nn, my_nn_t *copy);
 void my_nn_to_array(my_nn_t *nn, double **res);
 uint32_t my_nn_get_n_params(my_nn_t *nn);
+void my_nn_from_array(my_nn_t *nn, double *arr);
